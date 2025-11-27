@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  eureka-server:
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "9001:9001"
+    depends_on:
+      - eureka-server
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "9002:9002"
+    depends_on:
+      - eureka-server
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "9003:9003"
+    depends_on:
+      - eureka-server
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "9004:9004"
+    depends_on:
+      - eureka-server
