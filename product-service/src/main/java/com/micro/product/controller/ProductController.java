@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProductController {
 
-    @GetMapping("/products/{id}")
-    public String get(@PathVariable String id) {
+    @GetMapping("/product/{id}")   // changed to product
+    public String get(@PathVariable String id){
         return "Product:"+id;
     }
 
-    @GetMapping("/msg")
+    @GetMapping("/product")
     public String msgController()
     {
-        return "Satyam Raikwar";
+        return "Product Service Running";
     }
 }
