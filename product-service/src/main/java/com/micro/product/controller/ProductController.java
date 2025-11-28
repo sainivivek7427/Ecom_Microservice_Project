@@ -11,4 +11,10 @@ public class ProductController {
     public String get(@PathVariable String id) {
         return "Product:"+id;
     }
+
+    @GetMapping("/msg")
+    public String msgController()
+    {
+        return "Satyam Raikwar";
+    }
 }
