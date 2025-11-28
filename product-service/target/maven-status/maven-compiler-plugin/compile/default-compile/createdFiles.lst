@@ -1,2 +1,3 @@
-com/micro/product/controller/ProductController.class
 com/micro/product/ProductApplication.class
+com/micro/product/controller/ProductController.class
+com/micro/product/entity/Product.class

@@ -17,6 +17,20 @@ spring:
           predicates:
             - Path=/product/**
 
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+
+        - id: cart-service
+          uri: lb://cart-service
+          predicates:
+            - Path=/cart/**
+
+        - id: category-service
+          uri: lb://category-service
+          predicates:
+            - Path=/category/**
 eureka:
   client:
     service-url:

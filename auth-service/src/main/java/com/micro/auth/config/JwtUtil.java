@@ -3,6 +3,8 @@ package com.micro.auth.config;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
@@ -49,6 +51,11 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + validity))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+    }
+    private final Set<String> blacklistedTokens = ConcurrentHashMap.newKeySet();
+
+    public void blacklistToken(String token) {
+        blacklistedTokens.add(token);
     }
 
     public String extractUsername(String token) {
