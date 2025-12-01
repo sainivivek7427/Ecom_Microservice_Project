@@ -2,7 +2,7 @@ package com.micro.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.micro.product.client.CategoryClient;
-import com.micro.product.dto.CategoryDTO;
+import com.micro.product.dto.Category;
 import com.micro.product.dto.ProductDTO;
 import com.micro.product.entity.Product;
 import com.micro.product.service.ProductService;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class ProductController {
             ProductDTO productDTO = mapper.readValue(productData, ProductDTO.class);
 
             // Call Category Service to get Category ID
-            CategoryDTO category = categoryClient.getCategoryByName(productDTO.getCategoryName());
+            Category category = (Category) categoryClient.getCategoryByName(productDTO.getCategoryName()).getBody();
             if (category == null) {
                 return ResponseEntity.badRequest().body("Category Not Found!");
             }
@@ -106,7 +106,7 @@ public class ProductController {
     @GetMapping("/by-category")
     public ResponseEntity<List<Product>> getProductsByCategoryName(@RequestParam String categoryName) {
         // Use CategoryClient to get category ID first
-        CategoryDTO category = categoryClient.getCategoryByName(categoryName);
+        Category category = (Category) categoryClient.getCategoryByName(categoryName).getBody();
         if (category == null) {
             return ResponseEntity.badRequest().body(null);
         }

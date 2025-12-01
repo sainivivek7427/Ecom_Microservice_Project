@@ -19,4 +19,6 @@ public interface CategoryService {
     String deleteCategory(String id);
 
     List<ProductDTO> getProductsByCategoryName(String categoryName);
+
+    public Category getCategoryByName(String name);
 }

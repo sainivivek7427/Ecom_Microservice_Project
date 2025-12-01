@@ -8,7 +8,7 @@ import com.micro.category.service.CategoryService;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/categories")
 public class CategoryController {
 
 
@@ -43,7 +43,13 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{cid}")
-    public ResponseEntity<String> deleteCategory(@PathVariable String cid) {
+    public ResponseEntity<String> deleteCategory(@PathVariable(name = "cid") String cid) {
         return ResponseEntity.ok(categoryServices.deleteCategory(cid));
+    }
+
+    @GetMapping("/get-by-name")
+    public ResponseEntity<?> getCategoryByName(@RequestParam("name") String name){
+        Category categoryByName=categoryServices.getCategoryByName(name);
+        return ResponseEntity.ok(categoryByName);
     }
 }

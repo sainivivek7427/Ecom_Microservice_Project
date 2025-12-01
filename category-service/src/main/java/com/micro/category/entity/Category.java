@@ -21,8 +21,11 @@ public class Category {
     @Column(name = "image_name", length = 1000)
     private String imageName; // Image stored using URL (like Google Drive)
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
+    @Lob // Indicates that this field should be stored as a Large Object
+    @Column(name = "image_data", columnDefinition = "LONGBLOB") // For MySQL
+//     @Column(name = "image_data", columnDefinition = "BYTEA") // For PostgreSQL
+//    @Basic(fetch = FetchType.LAZY)
+//    @Column(name = "image_data", columnDefinition = "bytea")
     private byte[] image;
 
     @Column(name = "updated_date")

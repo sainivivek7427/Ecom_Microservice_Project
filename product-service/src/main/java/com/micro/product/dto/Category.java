@@ -3,7 +3,7 @@ package com.micro.product.dto;
 
 import java.util.Arrays;
 
-public class CategoryDTO {
+public class Category {
 
     private String id;  // UUID as String
 
@@ -18,7 +18,7 @@ public class CategoryDTO {
     private Long updatedDate;
 
     // Constructors
-    public CategoryDTO() {}
+    public Category() {}
 
 //    public Category(String id, String name, long createdDate) {
 //        this.id = id;
@@ -27,7 +27,7 @@ public class CategoryDTO {
 //    }
 
 
-    public CategoryDTO(String id, String name, long createdDate, String imageName, byte[] image, Long updatedDate) {
+    public Category(String id, String name, long createdDate, String imageName, byte[] image, Long updatedDate) {
         this.id = id;
         this.name = name;
         this.createdDate = createdDate;

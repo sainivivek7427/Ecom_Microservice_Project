@@ -5,13 +5,13 @@ import java.util.Arrays;
 public class ProductDTO {
 
     private String id;
-    private String name;
-    private String description;
-    private Double price;
-    private Double discountPercent;
+    private String name;//
+    private String description;//
+    private Double price;//
+    private Double discountPercent;//
     private Double discountPrice;
-    private String brand;
-    private Integer stockQuantity;
+    private String brand;//
+    private Integer stockQuantity;//
     private String imageName; // Image stored using URL
     private byte[] image;
     private String categoryId; // Only category ID stored

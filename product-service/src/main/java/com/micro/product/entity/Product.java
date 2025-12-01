@@ -39,7 +39,7 @@ public class Product {
     private String imageName; // Image stored using URL (like Google Drive)
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+//    @Column()
     private byte[] image;
 
     @Column(name = "category_id")

@@ -57,18 +57,29 @@ public class AuthController {
                 customer=customerRepository.findByUsername(request.getTypeValue()).orElseThrow(()->new NullPointerException("User not Found by using Username"));
             }
             System.out.println("Username "+customer.getUsername()+" Password "+request.getPassword());
-            //authentaication manager call the userdetaiservice class to load the database and match the detail if correct or not
+//            authentaication manager call the userdetaiservice class to load the database and match the detail if correct or not
             Authentication auth =  authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(customer.getUsername(), request.getPassword())
             );
-            System.out.println("Authentication "+auth.getDetails());
+            System.out.println("Authentication "+auth.isAuthenticated());
             UserDetails user = (UserDetails) auth.getPrincipal();
+            System.out.println("User "+user.getPassword());
+            System.out.println("user "+user.getPassword());
             String accessToken = jwtUtil.generateAccessToken(user);
             String refreshToken = jwtUtil.generateRefreshToken(user);
             Map<String,String> result=new HashMap<>();
             result.put("token", accessToken);
             result.put("refreshToken", refreshToken);
             return ResponseEntity.ok(result);
+//            Authentication auth = authManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(request.getTypeValue(), request.getPassword())
+//            );
+//
+//            UserDetails user = (UserDetails) auth.getPrincipal();
+//
+//            String token = jwtUtil.generateAccessToken(user);
+//
+//            return ResponseEntity.ok(token);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials "+e.getMessage() );
         }

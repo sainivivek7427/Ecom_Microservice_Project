@@ -6,10 +6,14 @@ spring:
     name: category-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/ecommerce_db?createDatabaseIfNotExist=true
+#    url: jdbc:mysql://localhost:3306/ecommerce_db?createDatabaseIfNotExist=true
+#    username: root
+#    password: 1234
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5433/testing
     username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: root
+    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:

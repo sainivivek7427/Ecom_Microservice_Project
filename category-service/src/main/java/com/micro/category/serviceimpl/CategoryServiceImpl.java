@@ -81,4 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found with name: " + categoryName));
         return productClient.getProductsByCategoryId(category.getId());
     }
+    public Category getCategoryByName(String name){
+        return categoryRepository.findByName(name).orElseThrow(()-> new NullPointerException("Not Category Found"));
+    }
 }

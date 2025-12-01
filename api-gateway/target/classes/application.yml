@@ -15,7 +15,7 @@ spring:
         - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/product/**
+            - Path=/products/**
 
         - id: auth-service
           uri: lb://auth-service
@@ -26,11 +26,11 @@ spring:
           uri: lb://cart-service
           predicates:
             - Path=/cart/**
-            
+
         - id: category-service
           uri: lb://category-service
           predicates:
-            - Path=/category/**
+            - Path=/categories/**
 eureka:
   client:
     service-url:
