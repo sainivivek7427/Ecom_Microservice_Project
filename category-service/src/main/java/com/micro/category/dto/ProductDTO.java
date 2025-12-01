@@ -1,48 +1,33 @@
-package com.micro.product.entity;
-
-
+package com.micro.category.dto;
 import jakarta.persistence.*;
 
 import java.util.Arrays;
 
-@Entity
-@Table(name = "products")
-public class Product {
 
-    @Id
-    @Column(name = "id", columnDefinition = "VARCHAR(36)")
+
+public class ProductDTO {
+
     private String id;
 
 
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "price", nullable = false)
     private Double price;
 
-    @Column(name = "discount_percent")
     private Double discountPercent;
 
-    @Column(name = "discount_price")
     private Double discountPrice;
 
-    @Column(name = "brand")
     private String brand;
 
-    @Column(name = "stock_quantity")
     private Integer stockQuantity;
 
-    @Column(name = "image_name", length = 1000)
     private String imageName; // Image stored using URL (like Google Drive)
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
-    @Column(name = "category_id")
     private String categoryId; // Only category ID stored
 
     public void setSubcategoryId(String subcategoryId) {
@@ -53,16 +38,12 @@ public class Product {
         return subcategoryId;
     }
 
-    @Column(name = "subcategory_id")
     private String subcategoryId; // Only category ID stored
 
-    @Column(name = "is_active")
     private Boolean isActive = true;
 
-    @Column(name = "created_date")
     private Long createdDate;
 
-    @Column(name = "updated_date")
     private Long updatedDate;
 
 

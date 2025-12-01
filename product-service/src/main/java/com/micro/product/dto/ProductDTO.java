@@ -1,86 +1,38 @@
-package com.micro.product.entity;
-
-
-import jakarta.persistence.*;
+package com.micro.product.dto;
 
 import java.util.Arrays;
 
-@Entity
-@Table(name = "products")
-public class Product {
+public class ProductDTO {
 
-    @Id
-    @Column(name = "id", columnDefinition = "VARCHAR(36)")
     private String id;
-
-
-    @Column(name = "name", nullable = false)
     private String name;
-
-    @Column(name = "description", length = 1000)
     private String description;
-
-    @Column(name = "price", nullable = false)
     private Double price;
-
-    @Column(name = "discount_percent")
     private Double discountPercent;
-
-    @Column(name = "discount_price")
     private Double discountPrice;
-
-    @Column(name = "brand")
     private String brand;
-
-    @Column(name = "stock_quantity")
     private Integer stockQuantity;
-
-    @Column(name = "image_name", length = 1000)
-    private String imageName; // Image stored using URL (like Google Drive)
-
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
+    private String imageName; // Image stored using URL
     private byte[] image;
-
-    @Column(name = "category_id")
     private String categoryId; // Only category ID stored
-
-    public void setSubcategoryId(String subcategoryId) {
-        this.subcategoryId = subcategoryId;
-    }
-
-    public String getSubcategoryId() {
-        return subcategoryId;
-    }
-
-    @Column(name = "subcategory_id")
-    private String subcategoryId; // Only category ID stored
-
-    @Column(name = "is_active")
+    private String categoryName; // Name used to get category via Feign
+    private String subcategoryId; // Only subcategory ID stored
     private Boolean isActive = true;
-
-    @Column(name = "created_date")
     private Long createdDate;
-
-    @Column(name = "updated_date")
     private Long updatedDate;
-
 
     // === Getters & Setters ===
 
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
+    }
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -88,7 +40,6 @@ public class Product {
     public String getDescription() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -96,7 +47,6 @@ public class Product {
     public Double getPrice() {
         return price;
     }
-
     public void setPrice(Double price) {
         this.price = price;
     }
@@ -104,7 +54,6 @@ public class Product {
     public Double getDiscountPercent() {
         return discountPercent;
     }
-
     public void setDiscountPercent(Double discountPercent) {
         this.discountPercent = discountPercent;
     }
@@ -112,7 +61,6 @@ public class Product {
     public Double getDiscountPrice() {
         return discountPrice;
     }
-
     public void setDiscountPrice(Double discountPrice) {
         this.discountPrice = discountPrice;
     }
@@ -120,7 +68,6 @@ public class Product {
     public String getBrand() {
         return brand;
     }
-
     public void setBrand(String brand) {
         this.brand = brand;
     }
@@ -128,16 +75,13 @@ public class Product {
     public Integer getStockQuantity() {
         return stockQuantity;
     }
-
     public void setStockQuantity(Integer stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
 
-
     public String getImageName() {
         return imageName;
     }
-
     public void setImageName(String imageName) {
         this.imageName = imageName;
     }
@@ -145,7 +89,6 @@ public class Product {
     public byte[] getImage() {
         return image;
     }
-
     public void setImage(byte[] image) {
         this.image = image;
     }
@@ -153,7 +96,6 @@ public class Product {
     public Boolean getActive() {
         return isActive;
     }
-
     public void setActive(Boolean active) {
         isActive = active;
     }
@@ -161,17 +103,27 @@ public class Product {
     public String getCategoryId() {
         return categoryId;
     }
-
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
+    public String getSubcategoryId() {
+        return subcategoryId;
+    }
+    public void setSubcategoryId(String subcategoryId) {
+        this.subcategoryId = subcategoryId;
+    }
 
     public Long getCreatedDate() {
         return createdDate;
     }
-
     public void setCreatedDate(Long createdDate) {
         this.createdDate = createdDate;
     }
@@ -179,14 +131,13 @@ public class Product {
     public Long getUpdatedDate() {
         return updatedDate;
     }
-
     public void setUpdatedDate(Long updatedDate) {
         this.updatedDate = updatedDate;
     }
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "ProductDTO{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
@@ -198,6 +149,8 @@ public class Product {
                 ", imageName='" + imageName + '\'' +
                 ", image=" + Arrays.toString(image) +
                 ", categoryId='" + categoryId + '\'' +
+                ", categoryName='" + categoryName + '\'' +
+                ", subcategoryId='" + subcategoryId + '\'' +
                 ", isActive=" + isActive +
                 ", createdDate=" + createdDate +
                 ", updatedDate=" + updatedDate +
