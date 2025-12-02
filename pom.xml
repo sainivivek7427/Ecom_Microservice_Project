@@ -17,6 +17,7 @@
         <module>payment-service</module>
         <module>cart-service</module>
         <module>category-service</module>
+        <module>subcategory-service</module>
     </modules>
 
     <properties>

@@ -32,7 +32,7 @@ public class CategoryController {
     }
 
     @GetMapping("/get/{cid}")
-    public ResponseEntity<?> getCategoryById(@PathVariable String cid) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable("cid") String cid) {
         return ResponseEntity.ok(categoryServices.getCategoryById(cid));
     }
 
@@ -48,8 +48,10 @@ public class CategoryController {
     }
 
     @GetMapping("/get-by-name")
-    public ResponseEntity<?> getCategoryByName(@RequestParam("name") String name){
+    public ResponseEntity<Category> getCategoryByName(@RequestParam("name") String name){
+        System.out.println("name "+name);
         Category categoryByName=categoryServices.getCategoryByName(name);
+        System.out.println("category name "+categoryByName);
         return ResponseEntity.ok(categoryByName);
     }
 }

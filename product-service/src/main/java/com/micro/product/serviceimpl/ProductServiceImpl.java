@@ -87,4 +87,11 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductsByDiscountRange(double min, double max) {
         return productRepository.findByDiscountRange(min, max);
     }
+
+    @Override
+    public Boolean getCategoryExist(String categoryId){
+        List<Product> productByCategoryId=productRepository.findByCategoryId(categoryId);
+
+        return productByCategoryId.isEmpty();
+    }
 }

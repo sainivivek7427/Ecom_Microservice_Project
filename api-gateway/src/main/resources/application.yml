@@ -31,6 +31,11 @@ spring:
           uri: lb://category-service
           predicates:
             - Path=/categories/**
+
+        - id: subcategory-service
+          uri: lb://subcategory-service
+          predicates:
+            - Path=/subcategories/**
 eureka:
   client:
     service-url:

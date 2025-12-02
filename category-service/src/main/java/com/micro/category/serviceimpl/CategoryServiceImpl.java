@@ -67,20 +67,22 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public String deleteCategory(String id) {
-        boolean isUsed = productClient.checkCategoryUsed(id); // call Product service
-        if (isUsed) {
+        Boolean isUsed = productClient.checkCategoryUsed(id).getBody(); // call Product service
+        System.out.println("Products exists "+isUsed);
+        if (Boolean.FALSE.equals(isUsed)) {
             throw new RuntimeException("⚠ Cannot delete: Category is used in products");
         }
         categoryRepository.deleteById(id);
         return "Category deleted successfully";
     }
 
-    @Override
-    public List<ProductDTO> getProductsByCategoryName(String categoryName) {
-        Category category = categoryRepository.findByName(categoryName)
-                .orElseThrow(() -> new RuntimeException("Category not found with name: " + categoryName));
-        return productClient.getProductsByCategoryId(category.getId());
-    }
+//    @Override
+//    public List<ProductDTO> getProductsByCategoryName(String categoryName) {
+//        Category category = categoryRepository.findByName(categoryName)
+//                .orElseThrow(() -> new RuntimeException("Category not found with name: " + categoryName));
+////        return pro;
+//        return productClient.getProductsByCategoryId(category.getId());
+//    }
     public Category getCategoryByName(String name){
         return categoryRepository.findByName(name).orElseThrow(()-> new NullPointerException("Not Category Found"));
     }

@@ -21,4 +21,6 @@ public interface ProductService {
     List<Product> getNewArrivalProducts(Long fromEpoch);
     List<Product> getTodayHotProducts();
     List<Product> getProductsByDiscountRange(double min, double max);
+
+    public Boolean getCategoryExist(String categoryId);
 }

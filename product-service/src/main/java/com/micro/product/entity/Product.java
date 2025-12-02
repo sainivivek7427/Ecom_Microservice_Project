@@ -38,20 +38,15 @@ public class Product {
     @Column(name = "image_name", length = 1000)
     private String imageName; // Image stored using URL (like Google Drive)
 
-    @Lob
-//    @Column()
+
+    @Lob // Indicates that this field should be stored as a Large Object
+    @Column(name = "image_data", columnDefinition = "LONGBLOB") // For MySQL
     private byte[] image;
 
     @Column(name = "category_id")
     private String categoryId; // Only category ID stored
 
-    public void setSubcategoryId(String subcategoryId) {
-        this.subcategoryId = subcategoryId;
-    }
 
-    public String getSubcategoryId() {
-        return subcategoryId;
-    }
 
     @Column(name = "subcategory_id")
     private String subcategoryId; // Only category ID stored
@@ -68,6 +63,13 @@ public class Product {
 
     // === Getters & Setters ===
 
+    public void setSubcategoryId(String subcategoryId) {
+        this.subcategoryId = subcategoryId;
+    }
+
+    public String getSubcategoryId() {
+        return subcategoryId;
+    }
 
     public void setId(String id) {
         this.id = id;

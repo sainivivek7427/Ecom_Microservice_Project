@@ -33,9 +33,11 @@ public class ProductController {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ProductDTO productDTO = mapper.readValue(productData, ProductDTO.class);
+            System.out.println("Prdouct dto "+productDTO);
 
             // Call Category Service to get Category ID
-            Category category = (Category) categoryClient.getCategoryByName(productDTO.getCategoryName()).getBody();
+            Category category = categoryClient.getCategoryByName(productDTO.getCategoryName()).getBody();
+            System.out.println("category "+category);
             if (category == null) {
                 return ResponseEntity.badRequest().body("Category Not Found!");
             }
@@ -106,7 +108,7 @@ public class ProductController {
     @GetMapping("/by-category")
     public ResponseEntity<List<Product>> getProductsByCategoryName(@RequestParam String categoryName) {
         // Use CategoryClient to get category ID first
-        Category category = (Category) categoryClient.getCategoryByName(categoryName).getBody();
+        Category category = categoryClient.getCategoryByName(categoryName).getBody();
         if (category == null) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -137,4 +139,11 @@ public class ProductController {
     public List<Product> getProductByDiscountRange(@PathVariable double min, @PathVariable double max) {
         return productService.getProductsByDiscountRange(min, max);
     }
+
+    @GetMapping("/check-category/{categoryId}")
+    ResponseEntity<Boolean> checkCategoryUsed(@PathVariable("categoryId") String categoryId){
+        Boolean checkCategorIdExist=productService.getCategoryExist(categoryId);
+        return ResponseEntity.ok(checkCategorIdExist);
+    }
+
 }
