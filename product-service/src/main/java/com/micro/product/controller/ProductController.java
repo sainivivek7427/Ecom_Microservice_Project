@@ -77,7 +77,7 @@ public class ProductController {
 
     // ------------------- Get Product By ID -------------------
     @GetMapping("/get/{pid}")
-    public ResponseEntity<?> getProductById(@PathVariable String pid) {
+    public ResponseEntity<?> getProductById(@PathVariable("pid") String pid) {
         try {
             Product product = productService.getProductById(pid);
             return ResponseEntity.ok(product);
@@ -99,15 +99,14 @@ public class ProductController {
 
     // ------------------- Get Products By Category ID -------------------
     @GetMapping("/by-categoryid")
-    public ResponseEntity<List<Product>> getProductsByCategoryId(@RequestParam String categoryid) {
-        List<Product> products = productService.getProductsByCategoryId(categoryid);
+    public ResponseEntity<List<Product>> getProductsByCategoryId(@RequestParam(name = "categoryid") String categoryid) {
+        List<Product> products = productService.getProductsByCategoryId(categoryid.trim());
         return ResponseEntity.ok(products);
     }
-
     // ------------------- Get Products By Category Name -------------------
     @GetMapping("/by-category")
-    public ResponseEntity<List<Product>> getProductsByCategoryName(@RequestParam String categoryName) {
-        // Use CategoryClient to get category ID first
+    public ResponseEntity<List<Product>> getProductsByCategoryName(
+            @RequestParam("categoryName") String categoryName) {
         Category category = categoryClient.getCategoryByName(categoryName).getBody();
         if (category == null) {
             return ResponseEntity.badRequest().body(null);
@@ -116,9 +115,11 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+
     // ------------------- Get Products By Discount -------------------
     @GetMapping("/by-discount")
-    public List<Product> getProductsByDiscount(@RequestParam Double discountPercent) {
+    public List<Product> getProductsByDiscount(
+            @RequestParam("discountPercent") Double discountPercent) {
         return productService.getProductsByDiscount(discountPercent);
     }
 
@@ -136,9 +137,12 @@ public class ProductController {
 
     // ------------------- Get Products By Discount Range -------------------
     @GetMapping("/discount/{min}/{max}")
-    public List<Product> getProductByDiscountRange(@PathVariable double min, @PathVariable double max) {
+    public List<Product> getProductByDiscountRange(
+            @PathVariable("min") double min,
+            @PathVariable("max") double max) {
         return productService.getProductsByDiscountRange(min, max);
     }
+
 
     @GetMapping("/check-category/{categoryId}")
     ResponseEntity<Boolean> checkCategoryUsed(@PathVariable("categoryId") String categoryId){

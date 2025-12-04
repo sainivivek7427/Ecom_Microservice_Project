@@ -1,5 +1,7 @@
 package com.micro.product.serviceimpl;
 
+import com.micro.product.client.CategoryClient;
+import com.micro.product.dto.Category;
 import com.micro.product.entity.Product;
 import com.micro.product.repository.ProductRepository;
 import com.micro.product.service.ProductService;
@@ -17,6 +19,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryClient categoryClient;
 
     @Override
     public Product saveProduct(Product product) {
@@ -56,7 +61,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductsByCategoryId(String categoryId) {
-        return productRepository.findByCategoryId(categoryId);
+
+        Category category = categoryClient.getCategoryById(categoryId);
+
+        if (category == null) {
+            throw new RuntimeException("Category not found with id: " + categoryId);
+        }
+
+        return productRepository.findByCategoryId(categoryId.trim());
     }
 
     @Override
@@ -90,8 +102,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Boolean getCategoryExist(String categoryId){
-        List<Product> productByCategoryId=productRepository.findByCategoryId(categoryId);
-
-        return productByCategoryId.isEmpty();
+        List<Product> productByCategoryId = productRepository.findByCategoryId(categoryId);
+        return !productByCategoryId.isEmpty();
     }
 }
