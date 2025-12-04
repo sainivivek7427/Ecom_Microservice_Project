@@ -3,6 +3,7 @@ package com.micro.product.serviceimpl;
 import com.micro.product.client.CategoryClient;
 import com.micro.product.dto.Category;
 import com.micro.product.entity.Product;
+import com.micro.product.exception.ProductNotFoundException;
 import com.micro.product.repository.ProductRepository;
 import com.micro.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(String id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
     }
 
     @Override
@@ -65,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
         Category category = categoryClient.getCategoryById(categoryId);
 
         if (category == null) {
-            throw new RuntimeException("Category not found with id: " + categoryId);
+            throw new ProductNotFoundException("No products found for category: " + categoryId);
         }
 
         return productRepository.findByCategoryId(categoryId.trim());
