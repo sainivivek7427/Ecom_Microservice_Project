@@ -19,6 +19,7 @@ public class AuthServiceImpl implements AuthService {
         customer.setCuuid(UUID.randomUUID().toString());
         customer.setCreatedDate(System.currentTimeMillis());
         customer.setUpdateDate(System.currentTimeMillis());
+        customer.setEnabled(true);
         if(customer.getUsername().equals("ecomm_admin")){
             customer.setRole("Admin");
         }

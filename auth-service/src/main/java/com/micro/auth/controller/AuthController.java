@@ -3,6 +3,7 @@ package com.micro.auth.controller;
 import com.micro.auth.config.JwtUtil;
 import com.micro.auth.config.UserDetailServiceimpl;
 import com.micro.auth.entity.Customer;
+import com.micro.auth.exception.UserNotFoundException;
 import com.micro.auth.model.AuthRequest;
 import com.micro.auth.model.MessageResponseDto;
 import com.micro.auth.repository.CustomerRepository;
@@ -47,65 +48,73 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
-            System.out.println("jkala");
-            Customer customer=null;
-            if(request.getTypeFormat().equals("sms")){
-                Long phoneno=Long.parseLong(request.getTypeValue());
-                customer=customerRepository.findByPhonenoAndPassword(phoneno, request.getPassword()).orElseThrow(()->new NullPointerException("User not Found by using phoneno"));
+            System.out.println("Login Started...");
+
+            Customer customer;
+
+            if (request.getTypeFormat().equalsIgnoreCase("sms")) {
+
+                Long phoneno = Long.parseLong(request.getTypeValue());
+
+                customer = customerRepository.findByPhonenoAndPassword(phoneno, request.getPassword())
+                        .orElseThrow(() -> new UserNotFoundException("User not Found with Phone Number"));
+            } else if (request.getTypeFormat().equalsIgnoreCase("email")) {
+
+                customer = customerRepository
+                        .findByUsername(request.getTypeValue())
+                        .orElseThrow(() -> new UserNotFoundException("User Not Found with Username"));
+
+            } else {
+                throw new RuntimeException("Invalid login type format must be: sms or email");
             }
-            else if(request.getTypeFormat().equals("email")){
-                customer=customerRepository.findByUsername(request.getTypeValue()).orElseThrow(()->new NullPointerException("User not Found by using Username"));
-            }
-            System.out.println("Username "+customer.getUsername()+" Password "+request.getPassword());
-//            authentaication manager call the userdetaiservice class to load the database and match the detail if correct or not
-            Authentication auth =  authManager.authenticate(
+
+            System.out.println("Username: " + customer.getUsername());
+            System.out.println("Password entered: " + request.getPassword());
+
+            Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(customer.getUsername(), request.getPassword())
             );
-            System.out.println("Authentication "+auth.isAuthenticated());
+
             UserDetails user = (UserDetails) auth.getPrincipal();
-            System.out.println("User "+user.getPassword());
-            System.out.println("user "+user.getPassword());
+
             String accessToken = jwtUtil.generateAccessToken(user);
             String refreshToken = jwtUtil.generateRefreshToken(user);
-            Map<String,String> result=new HashMap<>();
+
+            Map<String, String> result = new HashMap<>();
             result.put("token", accessToken);
             result.put("refreshToken", refreshToken);
+
             return ResponseEntity.ok(result);
-//            Authentication auth = authManager.authenticate(
-//                    new UsernamePasswordAuthenticationToken(request.getTypeValue(), request.getPassword())
-//            );
-//
-//            UserDetails user = (UserDetails) auth.getPrincipal();
-//
-//            String token = jwtUtil.generateAccessToken(user);
-//
-//            return ResponseEntity.ok(token);
+
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials "+e.getMessage() );
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid credentials: " + e.getMessage());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error: " + e.getMessage());
         }
     }
 
+
     @PostMapping("/login-check")
     public ResponseEntity<?> loginCheck(@RequestBody AuthRequest request) {
-        try {
-            System.out.println("jkala");
-            Customer customer=null;
-            if(request.getTypeFormat().equals("sms")){
-                Long phoneno=Long.parseLong(request.getTypeValue());
-                customer=customerRepository.findByPhonenoAndPassword(phoneno, request.getPassword()).orElseThrow(()->new NullPointerException("User not Found by using phoneno"));
-            }
-            else if(request.getTypeFormat().equals("email")){
-                customer=customerRepository.findByUsernameAndPassword(request.getTypeValue(), request.getPassword()).orElseThrow(()->new NullPointerException("User not Found by using Username"));
-            }
-            System.out.println("Username "+customer.getUsername()+" Password "+request.getPassword());
-            MessageResponseDto messageResponseDto = new MessageResponseDto();
-            messageResponseDto.setSuccess(true);
-            messageResponseDto.setStatus(HttpStatus.OK);
-            System.out.println("Correct fields");
-            return ResponseEntity.ok(messageResponseDto);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials "+e.getMessage() );
+        Customer customer;
+        if ("sms".equalsIgnoreCase(request.getTypeFormat())) {
+            Long phoneno = Long.parseLong(request.getTypeValue());
+            customer = customerRepository.findByPhonenoAndPassword(phoneno, request.getPassword())
+                    .orElseThrow(() -> new RuntimeException("User not Found by using phoneno"));
+        } else if ("email".equalsIgnoreCase(request.getTypeFormat())) {
+            customer = customerRepository.findByUsernameAndPassword(request.getTypeValue(), request.getPassword())
+                    .orElseThrow(() -> new RuntimeException("User not Found by using Username"));
+        } else {
+            throw new RuntimeException("Invalid login type format must be: sms or email");
         }
+
+        MessageResponseDto messageResponseDto = new MessageResponseDto();
+        messageResponseDto.setSuccess(true);
+        messageResponseDto.setStatus(HttpStatus.OK);
+        return ResponseEntity.ok(messageResponseDto);
     }
 
     @PostMapping("/refresh")

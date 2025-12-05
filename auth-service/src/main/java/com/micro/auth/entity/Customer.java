@@ -23,14 +23,21 @@ public class Customer {
     private Long pincode;
     private Long createdDate;
     private Long updateDate;
-
+    private Boolean enabled;
 
     public Customer() {
+    }
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Customer(String cuuid, String firstname, String lastname, String address, Long phoneno, String username,
                     String email, String password, String role, String city, String country, Long pincode, Long createdDate,
-                    Long updateDate) {
+                    Long updateDate, Boolean enabled) {
         this.cuuid = cuuid;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -45,6 +52,7 @@ public class Customer {
         this.pincode = pincode;
         this.createdDate = createdDate;
         this.updateDate = updateDate;
+        this.enabled=enabled;
     }
 
     public String getCuuid() {
@@ -142,7 +150,7 @@ public class Customer {
         return "Customer [cuuid=" + cuuid + ", firstname=" + firstname + ", lastname=" + lastname + ", address="
                 + address + ", phoneno=" + phoneno + ", username=" + username + ", email=" + email + ", password="
                 + password + ", role=" + role + ", city=" + city + ", country=" + country + ", pincode=" + pincode
-                + ", createdDate=" + createdDate + ", updateDate=" + updateDate + "]";
+                + ", createdDate=" + createdDate + ", updateDate=" + updateDate +", enabled=" + enabled + "]";
     }
 
 
