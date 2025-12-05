@@ -3,6 +3,7 @@ package com.micro.auth.controller;
 import com.micro.auth.config.JwtUtil;
 import com.micro.auth.config.UserDetailServiceimpl;
 import com.micro.auth.entity.Customer;
+import com.micro.auth.exception.LoginException;
 import com.micro.auth.exception.UserNotFoundException;
 import com.micro.auth.model.AuthRequest;
 import com.micro.auth.model.MessageResponseDto;
@@ -17,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,15 +59,15 @@ public class AuthController {
                 Long phoneno = Long.parseLong(request.getTypeValue());
 
                 customer = customerRepository.findByPhonenoAndPassword(phoneno, request.getPassword())
-                        .orElseThrow(() -> new UserNotFoundException("User not Found with Phone Number"));
+                        .orElseThrow(() -> new UserNotFoundException("User not Found with Phone Number and Password"));
             } else if (request.getTypeFormat().equalsIgnoreCase("email")) {
 
                 customer = customerRepository
                         .findByUsername(request.getTypeValue())
-                        .orElseThrow(() -> new UserNotFoundException("User Not Found with Username"));
+                        .orElseThrow(() -> new UserNotFoundException("User Not Found with Username and Password"));
 
             } else {
-                throw new RuntimeException("Invalid login type format must be: sms or email");
+                throw new LoginException("Invalid login type format must be: sms or email",HttpStatus.UNAUTHORIZED);
             }
 
             System.out.println("Username: " + customer.getUsername());
@@ -87,12 +89,10 @@ public class AuthController {
             return ResponseEntity.ok(result);
 
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid credentials: " + e.getMessage());
+            throw new LoginException("Invaild Credential"+e.getMessage(),HttpStatus.UNAUTHORIZED);
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + e.getMessage());
+            throw new LoginException("Something went wrong"+e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
