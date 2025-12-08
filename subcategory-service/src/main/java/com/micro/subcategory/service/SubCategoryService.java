@@ -2,6 +2,7 @@ package com.micro.subcategory.service;
 
 import com.micro.subcategory.entity.SubCategory;
 import com.micro.subcategory.model.SubCategoryResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,4 +19,6 @@ public interface SubCategoryService {
     public String deleteSubCategory(String subid);
 
     public List<SubCategoryResponse> getSubcategoriesByCategory(String categoryid);
+
+    public SubCategory getSubCategoryBySId(String sid);
 }

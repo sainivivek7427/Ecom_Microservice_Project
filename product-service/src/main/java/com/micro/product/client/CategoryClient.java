@@ -14,5 +14,7 @@ public interface CategoryClient {
     public ResponseEntity<Category> getCategoryByName(@RequestParam("name") String name);
 
     @GetMapping("/categories/get/{cid}")
-    Category getCategoryById(@PathVariable("cid") String cid);
+    public ResponseEntity<Category> getCategoryById(@PathVariable("cid") String cid);
+
+
 }

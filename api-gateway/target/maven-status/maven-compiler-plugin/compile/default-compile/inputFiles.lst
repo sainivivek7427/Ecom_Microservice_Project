@@ -1,2 +1,5 @@
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/api-gateway/src/main/java/com/micro/gateway/config/SwaggerConfig.java
 /home/vivek/Documents/mcro/Ecom_Microservice_Project/api-gateway/src/main/java/com/micro/gateway/GatewayApplication.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/api-gateway/src/main/java/com/micro/gateway/config/JwtAuthFilter.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/api-gateway/src/main/java/com/micro/gateway/config/JwtUtil.java
 /home/vivek/Documents/mcro/Ecom_Microservice_Project/api-gateway/src/main/java/com/micro/gateway/controller/MsgController.java

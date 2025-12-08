@@ -1,2 +1,5 @@
+com/micro/gateway/config/SwaggerConfig.class
 com/micro/gateway/GatewayApplication.class
+com/micro/gateway/config/JwtUtil.class
+com/micro/gateway/config/JwtAuthFilter.class
 com/micro/gateway/controller/MsgController.class

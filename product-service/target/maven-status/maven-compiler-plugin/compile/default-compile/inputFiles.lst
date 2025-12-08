@@ -1,3 +1,11 @@
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/serviceimpl/ProductServiceImpl.java
 /home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/controller/ProductController.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/repository/ProductRepository.java
 /home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/ProductApplication.java
 /home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/entity/Product.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/client/SubCategoryClient.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/dto/Category.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/service/ProductService.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/client/CategoryClient.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/dto/SubCategory.java
+/home/vivek/Documents/mcro/Ecom_Microservice_Project/product-service/src/main/java/com/micro/product/dto/ProductDTO.java

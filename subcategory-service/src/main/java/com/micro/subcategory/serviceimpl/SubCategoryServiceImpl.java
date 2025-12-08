@@ -9,6 +9,7 @@ import com.micro.subcategory.model.SubCategoryResponse;
 import com.micro.subcategory.repository.SubCategoryRepository;
 import com.micro.subcategory.service.SubCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -87,5 +88,10 @@ public class SubCategoryServiceImpl  implements SubCategoryService {
         return subcategories.stream()
                 .map(sub -> new SubCategoryResponse(sub.getId(), sub.getScategory()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public SubCategory getSubCategoryBySId(String sid){
+        return subCategoryRepository.findById(sid).orElseThrow(()-> new NullPointerException("SCategory not found"));
     }
 }

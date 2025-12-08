@@ -2,6 +2,7 @@ package com.micro.product.service;
 
 import com.micro.product.entity.Product;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface ProductService {
     List<Product> getProductsByDiscountRange(double min, double max);
 
     public Boolean getCategoryExist(String categoryId);
+
+    public void importProductsFromCsv(MultipartFile file);
 }

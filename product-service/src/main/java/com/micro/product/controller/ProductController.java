@@ -2,8 +2,10 @@ package com.micro.product.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.micro.product.client.CategoryClient;
+import com.micro.product.client.SubCategoryClient;
 import com.micro.product.dto.Category;
 import com.micro.product.dto.ProductDTO;
+import com.micro.product.dto.SubCategory;
 import com.micro.product.entity.Product;
 import com.micro.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class ProductController {
     @Autowired
     private CategoryClient categoryClient;
 
+    @Autowired
+    private SubCategoryClient subCategoryClient;
+
     // ------------------- Add Product -------------------
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(
@@ -39,7 +44,13 @@ public class ProductController {
             Category category = categoryClient.getCategoryByName(productDTO.getCategoryName()).getBody();
             System.out.println("category "+category);
             if (category == null) {
-                return ResponseEntity.badRequest().body("Category Not Found!");
+                return ResponseEntity.badRequest().body("Category Data Not Found!");
+            }
+
+            SubCategory subCategory = subCategoryClient.getSubCategoryById(productDTO.getSubcategoryId()).getBody();
+            System.out.println("subcategory "+subCategory);
+            if (subCategory == null) {
+                return ResponseEntity.badRequest().body("subCategory Data Not Found!");
             }
 
             // Map ProductDTO to Product entity
@@ -66,6 +77,18 @@ public class ProductController {
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/import-csv")
+    public ResponseEntity<?> importProducts(@RequestParam("file") MultipartFile file) {
+
+        try {
+            productService.importProductsFromCsv(file);
+            return ResponseEntity.ok("CSV Imported Successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
 
