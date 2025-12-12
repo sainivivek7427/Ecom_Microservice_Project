@@ -96,6 +96,16 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/login-guest")
+    public ResponseEntity<?> getAccessToken(@RequestParam("guestId") String guestId){
+        String accessTokenByGuestId= jwtUtil.generateGuestToken(guestId);
+        String refreshTokenGuestId= jwtUtil.generateRefreshGuestToken();
+        Map<String, String> result = new HashMap<>();
+        result.put("token", accessTokenByGuestId);
+        result.put("refreshToken",refreshTokenGuestId);
+        return ResponseEntity.ok(result);
+    }
+
 
     @PostMapping("/login-check")
     public ResponseEntity<?> loginCheck(@RequestBody AuthRequest request) {
@@ -127,6 +137,23 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
             }
             String newAccessToken = jwtUtil.generateAccessToken(user);
+            HashMap<String,String> hmap=new HashMap<>();
+            return ResponseEntity.ok(hmap.put("access token",newAccessToken));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
+        }
+    }
+
+    @PostMapping("/refresh-guest")
+    public ResponseEntity<?> refreshGuest(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+        try {
+            String username = jwtUtil.extractUsername(refreshToken);
+//            UserDetails user = userDetailsService.loadUserByUsername(username);
+            if (!jwtUtil.validateGuestToken(refreshToken)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
+            }
+            String newAccessToken = jwtUtil.generateGuestToken(username);
             HashMap<String,String> hmap=new HashMap<>();
             return ResponseEntity.ok(hmap.put("access token",newAccessToken));
         } catch (Exception e) {

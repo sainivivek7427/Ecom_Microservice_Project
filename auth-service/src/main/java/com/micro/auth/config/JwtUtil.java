@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -71,5 +72,37 @@ public class JwtUtil {
     private boolean isTokenExpired(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                 .getBody().getExpiration().before(new Date());
+    }
+
+    public String generateRefreshGuestToken() {
+        return createToken("guest", REFRESH_TOKEN_VALIDITY);
+    }
+
+    /*Guest Token*/
+    // Generate Guest Token for unauthenticated users (before login)
+    public String generateGuestToken(String guestIDValue) {
+        return Jwts.builder()
+                .setSubject("guest")
+                .claim("role", "guest")
+                .claim("guestId",guestIDValue)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))  // Token valid for 24 hours
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    // Validate the JWT token
+    public boolean validateGuestToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // Extract Claims from the JWT Token
+    public Claims extractClaims(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 }

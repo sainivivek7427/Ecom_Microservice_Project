@@ -1,5 +1,6 @@
 package com.micro.gateway.config;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 //import org.springframework.security.core.userdetails.UserDetails;
@@ -35,5 +36,17 @@ public class JwtUtil {
     private boolean isTokenExpired(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                 .getBody().getExpiration().before(new Date());
+    }
+    public boolean validateGuestToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public Claims extractClaims(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 }

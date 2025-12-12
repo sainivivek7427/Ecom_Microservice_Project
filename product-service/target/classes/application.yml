@@ -6,18 +6,18 @@ spring:
     name: product-service
 
   datasource:
-#    url: jdbc:mysql://sql12.freesqldatabase.com:3306/sql12810248?createDatabaseIfNotExist=true
+#    url: jdbc:mysql://sql12.freesqldatabase.com:3306/sql12810248?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
 #    username: sql12810248
 #    password: SqG5w4ebQ2
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ecommerce_db?createDatabaseIfNotExist=true
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:postgresql://localhost:5433/testing
+#    url: jdbc:mysql://localhost:3306/ecommerce_db?createDatabaseIfNotExist=true
 #    username: root
-#    password: root
-#    driver-class-name: org.postgresql.Driver
+#    password: 1234
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:postgresql://localhost:5433/testing
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update

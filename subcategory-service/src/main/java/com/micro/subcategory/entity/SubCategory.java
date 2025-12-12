@@ -20,7 +20,7 @@ public class SubCategory {
     private String imageName; // Image stored using URL (like Google Drive)
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+    @Column(name="image")
     private byte[] image;
 
     @Column(name="category_id")

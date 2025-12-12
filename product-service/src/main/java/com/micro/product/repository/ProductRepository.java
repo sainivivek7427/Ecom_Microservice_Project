@@ -1,7 +1,9 @@
 package com.micro.product.repository;
 
 import com.micro.product.entity.Product;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,6 +28,11 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     @Query("SELECT p FROM Product p WHERE p.discountPercent >= :min AND p.discountPercent < :max")
     List<Product> findByDiscountRange(@Param("min") double min, @Param("max") double max);
 
+    @Transactional
+    @Modifying
+    @Query(value="DELETE FROM products", nativeQuery = true)
+//    @Query(value = "DELETE FROM products",nativeQuery = true)
+    void deleteQuery();
     List<Product> findBySubcategoryId(String subcategoryid);
 
 //    List<Product> findByCategoryId(String categoryId);

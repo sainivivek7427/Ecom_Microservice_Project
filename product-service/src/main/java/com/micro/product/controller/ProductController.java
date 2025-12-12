@@ -7,6 +7,7 @@ import com.micro.product.dto.Category;
 import com.micro.product.dto.ProductDTO;
 import com.micro.product.dto.SubCategory;
 import com.micro.product.entity.Product;
+import com.micro.product.repository.ProductRepository;
 import com.micro.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -138,6 +139,14 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @Autowired
+    ProductRepository  productRepository;
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteAll(){
+        productRepository.deleteQuery();
+        return ResponseEntity.ok("Delete all product ");
+    }
 
     // ------------------- Get Products By Discount -------------------
     @GetMapping("/by-discount")
