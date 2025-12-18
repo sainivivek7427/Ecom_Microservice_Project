@@ -5,6 +5,7 @@ import com.micro.product.client.CategoryClient;
 import com.micro.product.dto.Category;
 import com.micro.product.client.SubCategoryClient;
 import com.micro.product.dto.Category;
+import com.micro.product.dto.ProductResponseCart;
 import com.micro.product.dto.SubCategory;
 import com.micro.product.entity.Product;
 import com.micro.product.exception.ProductNotFoundException;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -171,10 +173,22 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByCategoryId(categoryId.trim());
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponseCart> getProductbyProductIds(List<String> productIds){
+        List<Product> productsList=productRepository.findByProductIds(productIds);
+//        System.out.println("products  "+productsList);
+        return productsList.stream().map(product -> new ProductResponseCart(product.getId(),product.getName(),product.getPrice(),product.getDiscountPrice(),product.getImage(),product.getImageName()) ).collect(Collectors.toList());
+    }
+
+
+
     @Override
     public List<Product> getProductsBySubCategoryId(String subCategoryId) {
         return productRepository.findBySubcategoryId(subCategoryId);
     }
+
 
     @Override
     public List<Product> getProductsByDiscount(Double discountPercent) {

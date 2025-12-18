@@ -5,6 +5,7 @@ import com.micro.product.client.CategoryClient;
 import com.micro.product.client.SubCategoryClient;
 import com.micro.product.dto.Category;
 import com.micro.product.dto.ProductDTO;
+import com.micro.product.dto.ProductResponseCart;
 import com.micro.product.dto.SubCategory;
 import com.micro.product.entity.Product;
 import com.micro.product.repository.ProductRepository;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -109,6 +111,34 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @GetMapping("/by-pids")
+    public ResponseEntity<List<ProductResponseCart>> getListProductResponse(@RequestParam("productIds") String productIds){
+        System.out.println("Hello ");
+        // Convert array to list (if needed)
+        List<String> productList = Arrays.asList(productIds.split(","));
+//        List<String> productList = Arrays.asList(productIds);
+        return ResponseEntity.ok(productService.getProductbyProductIds(productList));
+    }
+
+    @GetMapping("/stock/check")
+    public ResponseEntity<Boolean> checkStock(@RequestParam("productId") String productId, @RequestParam("requestedQty") Integer requestedQty) {
+        Product p = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        //product stock=10, cart request =9 true | cart request =17 false
+        boolean available = p.getStockQuantity() >= requestedQty;
+        if(available){
+
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
+    }
+
+//    @GetMapping("/getPrice/{pid}")
+//    public ResponseEntity<>
+
+
 
     // ------------------- Delete Product -------------------
     @DeleteMapping("/delete/{pid}")

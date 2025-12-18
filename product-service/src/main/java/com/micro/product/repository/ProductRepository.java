@@ -25,6 +25,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     // 4. Show Product today hot deals
     List<Product> findByCreatedDateBetween(Long startOfDay, Long endOfDay);
 
+    @Query("SELECT p FROM Product p WHERE p.id IN :productIds")
+    List<Product> findByProductIds(@Param("productIds") List<String> productIds);
     @Query("SELECT p FROM Product p WHERE p.discountPercent >= :min AND p.discountPercent < :max")
     List<Product> findByDiscountRange(@Param("min") double min, @Param("max") double max);
 

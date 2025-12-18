@@ -1,5 +1,6 @@
 package com.micro.product.service;
 
+import com.micro.product.dto.ProductResponseCart;
 import com.micro.product.entity.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +15,7 @@ public interface ProductService {
     Product getProductById(String id);
     Product updateProduct(String id, Product updatedProduct);
     void deleteProductById(String id);
-
+    public List<ProductResponseCart> getProductbyProductIds(List<String> productIds);
     List<Product> getProductsByCategoryId(String categoryId);
     List<Product> getProductsBySubCategoryId(String subCategoryId);
 

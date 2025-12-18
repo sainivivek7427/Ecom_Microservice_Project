@@ -5,7 +5,9 @@ import com.micro.auth.config.UserDetailServiceimpl;
 import com.micro.auth.entity.Customer;
 import com.micro.auth.exception.LoginException;
 import com.micro.auth.exception.UserNotFoundException;
+import com.micro.auth.feignClient.CartClient;
 import com.micro.auth.model.AuthRequest;
+import com.micro.auth.model.MergeGuestToUserCartResponse;
 import com.micro.auth.model.MessageResponseDto;
 import com.micro.auth.repository.CustomerRepository;
 import com.micro.auth.service.AuthService;
@@ -40,6 +42,9 @@ public class AuthController {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    CartClient cartClient;
 
     @PostMapping("/reg")
     public ResponseEntity<?> addCustomer(@RequestBody Customer customer){
@@ -79,14 +84,20 @@ public class AuthController {
 
             UserDetails user = (UserDetails) auth.getPrincipal();
 
-            String accessToken = jwtUtil.generateAccessToken(user);
-            String refreshToken = jwtUtil.generateRefreshToken(user);
+            MergeGuestToUserCartResponse mergeGuestToUserCartResponse=cartClient.mergeGuestToUserCart("user:"+customer.getCuuid(), request.getGuestUserId()).getBody();
+            if (mergeGuestToUserCartResponse != null && mergeGuestToUserCartResponse.isSuccess()) {
+                System.out.println("merge "+mergeGuestToUserCartResponse.isExistGuestCart()+" user cart "+mergeGuestToUserCartResponse.isExistUserCart() +" success "+mergeGuestToUserCartResponse.isSuccess());
+                String accessToken = jwtUtil.generateAccessToken(user);
+                String refreshToken = jwtUtil.generateRefreshToken(user);
 
-            Map<String, String> result = new HashMap<>();
-            result.put("token", accessToken);
-            result.put("refreshToken", refreshToken);
+                Map<String, String> result = new HashMap<>();
+                result.put("token", accessToken);
+                result.put("refreshToken", refreshToken);
 
-            return ResponseEntity.ok(result);
+                return ResponseEntity.ok(result);
+            }
+            throw new LoginException("Something went wrong",HttpStatus.BAD_REQUEST);
+
 
         } catch (AuthenticationException e) {
             throw new LoginException("Invaild Credential"+e.getMessage(),HttpStatus.UNAUTHORIZED);

@@ -4,14 +4,24 @@ public class AuthRequest {
     private String typeFormat; //type "email" or "sms"
     private String typeValue; //value username or phoneno
     private String password;
+    private String guestUserId;
 
-    public AuthRequest(String typeFormat, String typeValue, String password) {
+    public AuthRequest(String typeFormat, String typeValue, String password, String guestUserId) {
         this.typeFormat = typeFormat;
         this.typeValue = typeValue;
         this.password = password;
+        this.guestUserId = guestUserId;
     }
 
     public AuthRequest() {
+    }
+
+    public String getGuestUserId() {
+        return guestUserId;
+    }
+
+    public void setGuestUserId(String guestUserId) {
+        this.guestUserId = guestUserId;
     }
 
     public String getTypeFormat() {

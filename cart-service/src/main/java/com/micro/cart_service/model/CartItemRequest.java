@@ -3,11 +3,18 @@ package com.micro.cart_service.model;
 public class CartItemRequest {
     private String productId;
     private Integer quantity;
-
-    private double price;
+    private String guestUserId;
 
     // Getters and Setters
 
+
+    public String getGuestUserId() {
+        return guestUserId;
+    }
+
+    public void setGuestUserId(String guestUserId) {
+        this.guestUserId = guestUserId;
+    }
 
     public String getProductId() {
         return productId;
@@ -25,20 +32,12 @@ public class CartItemRequest {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     @Override
     public String toString() {
         return "CartItemRequest{" +
                 "productId='" + productId + '\'' +
                 ", quantity=" + quantity +
-                ", price=" + price +
+                ", guestUserId='" + guestUserId + '\'' +
                 '}';
     }
 }
