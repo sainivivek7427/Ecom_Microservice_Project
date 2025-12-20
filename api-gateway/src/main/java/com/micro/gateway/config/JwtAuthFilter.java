@@ -1,5 +1,6 @@
 package com.micro.gateway.config;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -30,44 +31,47 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         // Get Bearer token
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
 
+        System.out.println("auth header "+authHeader);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 //            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 //            return exchange.getResponse().setComplete();
 //            return unAuthorizeResponse(exchange,"Missing Bearer token in authorization header");
-            throw new MissingTokenException("Missing Bearer token in authorization header",HttpStatus.FORBIDDEN);
+            return MissingTokenResponse(exchange,"Missing Bearer token in authorization header");
+//            throw new MissingTokenException("Missing Bearer token in authorization header",HttpStatus.FORBIDDEN);
         }
 
         String token = authHeader.substring(7);
-
+        System.out.println(token);
         try {
 //            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            String username=jwtUtil.extractUsername(token);
-            String role=jwtUtil.extractClaims(token).get("role").toString();
-            if(username.equals("guest") && role.equals("guest")){
-                boolean isTokenGuestValid= jwtUtil.validateGuestToken(token);
-                if(!isTokenGuestValid){
-                    throw new UnauthorizedGuestException("Invalid guest token or expired",HttpStatus.BAD_REQUEST);
+//            String username=jwtUtil.extractUsername(token);
+            Claims claims = jwtUtil.extractClaimsAllowExpired(token);
+
+            String username = claims.getSubject();
+            String role = claims.get("role", String.class);
+            System.out.println(username);
+            System.out.println("Role "+role);
+            boolean expired = jwtUtil.isTokenExpired(token);
+            if ("guest".equals(role)) {
+                System.out.println("expired "+expired);
+                if (expired || !jwtUtil.validateGuestToken(token)) {
+                    System.out.println("guest token expired ");
+                    throw new UnauthorizedGuestException(
+                            "Guest token expired or invalid",
+                            HttpStatus.NOT_ACCEPTABLE
+                    );
+                }
+
+            } else {
+
+                if (expired || !jwtUtil.isTokenValid(token)) {
+                    throw new UnAuthorizedUserException(
+                            "User token expired or invalid",
+                            HttpStatus.UNAUTHORIZED
+                    );
                 }
             }
-            else{
-                boolean isTokenValid= jwtUtil.isTokenValid(token);
-                if(!isTokenValid){
-                    throw new UnAuthorizedUserException("Invalid user token or expired",HttpStatus.UNAUTHORIZED);
-                }
-            }
-//            boolean istokenValid=jwtUtil.isTokenValid(token);
-//            System.out.println("is token valid "+istokenValid);
-//            String username=null;
-//            if(istokenValid){
-//                 username= jwtUtil.extractUsername(token);
-//
-//            }
-//            else{
-//                throw new UnauthorizedGuestException("Invalid guest token or expired",HttpStatus.BAD_REQUEST);
-//            }
-
-
             // You can pass username to downstream services
             ServerHttpRequest modifiedRequest = exchange.getRequest().mutate()
                     .header("X-User", username)
@@ -80,28 +84,28 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         catch (UnauthorizedGuestException ex){
             return unAuthorizeGuestResponse(exchange,ex.getMessage());
         }
+
+        catch (UnAuthorizedUserException ex){
+            return unAuthorizeUserResponse(exchange,ex.getMessage());
+        }
         catch (MissingTokenException ex){
             return MissingTokenResponse(exchange,ex.getMessage());
         }
-        catch (Exception e) {
-            return unAuthorizeResponse(exchange,"Invalid Token or expired");
-//            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-//            return exchange.getResponse().setComplete();
+
+        catch (Exception ex){
+            return unAuthorizeResponse(exchange,ex.getMessage());
         }
+
     }
 
 
     private Mono<Void> unAuthorizeResponse(ServerWebExchange exchange,String message){
-        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
         exchange.getResponse().getHeaders().add("Content-Type","application/json");
-        String json=String.format("{\"status\":401,\"error\":\"UNAUTHORIZED\",\"message\":\"%s\",\"path\":\"%s\"}",message,
+        String json=String.format("{\"status\":400,\"error\":\"UNAUTHORIZED\",\"message\":\"%s\",\"path\":\"%s\"}",message,
                 exchange.getRequest().getPath());
 
         byte[] bytesResponse=json.getBytes();
-//        return exchange.getResponse()
-//                .writeWith(Mono.just(exchange.getResponse()
-//                        .bufferFactory()
-//                        .wrap(bytesResponse)));
         return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytesResponse)));
     }
     private Mono<Void> MissingTokenResponse(ServerWebExchange exchange,String message){
@@ -111,24 +115,25 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
                 exchange.getRequest().getPath());
 
         byte[] bytesResponse=json.getBytes();
-//        return exchange.getResponse()
-//                .writeWith(Mono.just(exchange.getResponse()
-//                        .bufferFactory()
-//                        .wrap(bytesResponse)));
         return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytesResponse)));
     }
 
     private Mono<Void> unAuthorizeGuestResponse(ServerWebExchange exchange,String message){
-        exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
+        exchange.getResponse().setStatusCode(HttpStatus.NOT_ACCEPTABLE);
         exchange.getResponse().getHeaders().add("Content-Type","application/json");
-        String json=String.format("{\"status\":400,\"error\":\"UNAUTHORIZED GUEST USER\",\"message\":\"%s\",\"path\":\"%s\"}",message,
+        String json=String.format("{\"status\":406,\"error\":\"UNAUTHORIZED GUEST USER\",\"message\":\"%s\",\"path\":\"%s\"}",message,
                 exchange.getRequest().getPath());
 
         byte[] bytesResponse=json.getBytes();
-//        return exchange.getResponse()
-//                .writeWith(Mono.just(exchange.getResponse()
-//                        .bufferFactory()
-//                        .wrap(bytesResponse)));
+        return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytesResponse)));
+    }
+    private Mono<Void> unAuthorizeUserResponse(ServerWebExchange exchange,String message){
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        exchange.getResponse().getHeaders().add("Content-Type","application/json");
+        String json=String.format("{\"status\":401,\"error\":\"UNAUTHORIZED USER\",\"message\":\"%s\",\"path\":\"%s\"}",message,
+                exchange.getRequest().getPath());
+
+        byte[] bytesResponse=json.getBytes();
         return exchange.getResponse().writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytesResponse)));
     }
     @Override

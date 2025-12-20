@@ -1,6 +1,8 @@
 package com.micro.gateway.config;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 //import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +19,7 @@ public class JwtUtil {
 
     SecretKey secretKey = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     public String extractUsername(String token) {
+        System.out.println("extract username ");
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
                 .getBody().getSubject();
     }
@@ -28,20 +31,57 @@ public class JwtUtil {
 //                .parseClaimsJws(token);
 //    }
 
+    public Claims extractClaimsAllowExpired(String token) {
+        try {
+            return Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims(); // 🔥 key line
+        }
+    }
     public boolean isTokenValid(String token) {
-        final String username = extractUsername(token);
-        return !isTokenExpired(token);
+        try {
+            Claims claims = extractAllClaims(token);
+
+            String role = claims.get("role", String.class);
+
+            return role != null && !"guest".equals(role);
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
-    private boolean isTokenExpired(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-                .getBody().getExpiration().before(new Date());
+    public boolean isTokenExpired(String token) {
+        try {
+            Date expiration = extractAllClaims(token).getExpiration();
+            return expiration.before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (JwtException e) {
+            return true; // malformed / invalid signature
+        }
+    }
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
     }
     public boolean validateGuestToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
+            Claims claims = extractAllClaims(token);
+
+            String role = claims.get("role", String.class);
+            String username = claims.getSubject();
+
+            return "guest".equals(role) && "guest".equals(username);
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
     }

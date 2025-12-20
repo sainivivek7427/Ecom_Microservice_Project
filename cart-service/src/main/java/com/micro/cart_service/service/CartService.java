@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public interface CartService {
 
-    public CartItem addToCart(String guestUserCartId, CartItemRequest cartItemRequest);
+    public CartItem addToCart(String cartId, CartItemRequest cartItemRequest);
 
     public List<CartItem> getItemsByGuestCartId(String guestCartId);
 

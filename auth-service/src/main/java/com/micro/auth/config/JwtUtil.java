@@ -24,8 +24,8 @@ public class JwtUtil {
     private static final String SECRET = "myverysecureandlongenoughsecretkey123!@#"; // >= 32 characters
 
     SecretKey secretKey = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
-    private final long ACCESS_TOKEN_VALIDITY = 10 * 60 * 1000; // 10 minutes
-    private final long REFRESH_TOKEN_VALIDITY = 24 * 60 * 60 * 1000; // 1 day
+    private final long ACCESS_TOKEN_VALIDITY = 4 * 60 * 1000; // 10 minutes
+    private final long REFRESH_TOKEN_VALIDITY = 2 * 60 * 60 * 1000; // 1 day
 
     public String generateAccessToken(UserDetails user) {
         String role= String.valueOf(user.getAuthorities().stream().findFirst().get());

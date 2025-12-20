@@ -29,8 +29,10 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addToCartProduct(@RequestBody CartItemRequest cartItemRequest,@RequestParam("guestUserCartId") String guestUserCartId ){
-        return ResponseEntity.ok(cartService.addToCart(guestUserCartId,cartItemRequest));
+    public ResponseEntity<?> addToCartProduct(@RequestBody CartItemRequest cartItemRequest,@RequestParam("cartId") String cartId ){
+        System.out.println("cart id "+cartId);
+        System.out.println("cartitem "+cartItemRequest.getQuantity());
+        return ResponseEntity.ok(cartService.addToCart(cartId,cartItemRequest));
 //        return null;
     }
 
@@ -52,7 +54,7 @@ public class CartController {
     }
 
     @GetMapping("/items")
-    public ResponseEntity<?> items(@RequestParam String guestCartId) {
+    public ResponseEntity<?> items(@RequestParam("guestCartId") String guestCartId) {
         return ResponseEntity.ok(cartService.getItemsByGuestCartId(guestCartId));
     }
 

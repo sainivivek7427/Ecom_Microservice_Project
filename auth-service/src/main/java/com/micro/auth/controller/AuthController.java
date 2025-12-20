@@ -9,6 +9,7 @@ import com.micro.auth.feignClient.CartClient;
 import com.micro.auth.model.AuthRequest;
 import com.micro.auth.model.MergeGuestToUserCartResponse;
 import com.micro.auth.model.MessageResponseDto;
+import com.micro.auth.model.RefreshTokenResponse;
 import com.micro.auth.repository.CustomerRepository;
 import com.micro.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,17 +159,24 @@ public class AuthController {
     @PostMapping("/refresh-guest")
     public ResponseEntity<?> refreshGuest(@RequestBody Map<String, String> request) {
         String refreshToken = request.get("refreshToken");
+        System.out.println(refreshToken);
         try {
             String username = jwtUtil.extractUsername(refreshToken);
+            System.out.println("username "+username);
 //            UserDetails user = userDetailsService.loadUserByUsername(username);
             if (!jwtUtil.validateGuestToken(refreshToken)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
             }
             String newAccessToken = jwtUtil.generateGuestToken(username);
-            HashMap<String,String> hmap=new HashMap<>();
-            return ResponseEntity.ok(hmap.put("access token",newAccessToken));
+            System.out.println("new acces token "+newAccessToken);
+//            HashMap<String,String> hmap=new HashMap<>();
+//            return ResponseEntity.ok(hmap.put("accessToken",newAccessToken));
+            RefreshTokenResponse response =
+                    new RefreshTokenResponse(newAccessToken);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid refresh token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
     }
 

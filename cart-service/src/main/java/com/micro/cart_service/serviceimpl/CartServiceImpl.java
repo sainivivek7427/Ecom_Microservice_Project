@@ -54,6 +54,8 @@ public class CartServiceImpl implements CartService {
         CartItem cartItem = cartItemRepository
                 .findByCartIdAndProductId(cartId, cartItemRequest.getProductId())
                 .orElse(null);
+        System.out.println("Cart item "+cartItem);
+//        System.out.println(cartItem.getQuantity());
 
         if (cartItem == null) {
             cartItem = new CartItem();
@@ -61,8 +63,8 @@ public class CartServiceImpl implements CartService {
             cartItem.setCartId(cartId);
             cartItem.setProductId(cartItemRequest.getProductId());
 
-            cartItem.setQuantity(cartItem.getQuantity());
-            cartItem.setGuestUserId(cartItem.getGuestUserId());
+            cartItem.setQuantity(cartItemRequest.getQuantity());
+            cartItem.setGuestUserId(cartItemRequest.getGuestUserId());
             cartItem.setCreatedDate(System.currentTimeMillis());
         } else {
             cartItem.setQuantity(cartItem.getQuantity() + cartItemRequest.getQuantity());
